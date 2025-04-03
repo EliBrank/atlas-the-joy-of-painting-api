@@ -1,0 +1,23 @@
+{
+  "name": "atlas-the-joy-of-painting-api",
+  "version": "1.0.0",
+  "description": "This repo explores the idea of using ETL, or \"Extract,\" \"Transform,\" and \"Load\" to manipulate and coalesce data about Bob Ross's the Joy of Painting from several sources into a single database. This data will be structured such that it can be easily queried to find information on broadcast dates, subject matter, and color palettes used.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "nodemon": "^3.1.9",
+    "prisma": "^6.5.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.5.0"
+  }
+}
