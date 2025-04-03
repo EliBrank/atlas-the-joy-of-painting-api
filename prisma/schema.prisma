@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Episode {
+  id Int @id @default(autoincrement())
+  title String @unique
+  airDate DateTime
+  subjects EpisodeSubject[]
+  colors EpisodeColor[]
+}
+
+model Color {
+  id Int @id @default(autoincrement())
+  name String @unique
+  episodes EpisodeColor[]
+}
+
+model Subject {
+  id Int @id @default(autoincrement())
+  name String @unique
+  episodes EpisodeSubject[]
+}
+
+model EpisodeColor {
+  episode Episode @relation(fields: [episodeId], references: [id])
+  episodeId Int
+  color Color @relation(fields: [colorId], references: [id])
+  colorId Int
+
+  @@id([episodeId, colorId])
+}
+
+model EpisodeSubject {
+  episode Episode @relation(fields: [episodeId], references: [id])
+  episodeId Int
+  subject Subject @relation(fields: [subjectId], references: [id])
+  subjectId Int
+
+  @@id([episodeId, subjectId])
+}
