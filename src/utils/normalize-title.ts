@@ -1,4 +1,17 @@
-export default function normalizeTitle(text: string): string {
+import { compareTwoStrings } from 'string-similarity';
+
+export function normalizeTitle(text: string): string {
+  // remove leading/trailing quotes/whitespace
+  let textClean = text.replace(/^["'\s]+|["'\s]+$/g, '');
+  // replace '&' with 'and'
+  textClean = textClean.replace(/&/g, 'and');
+  // replace '-' with spaces
+  textClean = textClean.replace(/-/g, ' ');
+
+  return textClean.toLowerCase().trim();
+}
+
+export function prettifyTitle(text: string): string {
   const exceptions = new Set([
     'a', 'and', 'as', 'at', 'but', 'by', 'down', 'for', 'from', 'if', 'in', 'into', 'is', 'like', 'near', 'nor', 'of', 'off' , 'on', 'once', 'onto', 'or', 'over', 'past', 'so', 'than', 'that', 'to', 'upon', 'when', 'with', 'yet'
   ]);

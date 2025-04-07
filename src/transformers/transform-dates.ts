@@ -1,7 +1,8 @@
 import extractDates from 'extrators/extract-dates.js';
-import normalizeTitle from 'utils/normalize-title.js';
+import { normalizeTitle } from 'utils/normalize-title.js';
 
 export interface EpisodeDateData {
+  episodeNumber: number;
   title: string;
   date: Date;
 }
@@ -10,7 +11,8 @@ export async function transformDates(): Promise<EpisodeDateData[]> {
   const content = await extractDates();
   const lines = content.split('\n');
 
-  return lines.map(line => {
+  return lines.map((line, index) => {
+    const episodeNumber = index + 1;
     // captures "title" (date) in two separate groups
     const pattern = /"([^"]+)"\s*\((\w+\s\d{1,2},\s\d{4})\)/;
     const match = line.match(pattern);
@@ -33,8 +35,10 @@ export async function transformDates(): Promise<EpisodeDateData[]> {
       throw new Error('Invalid date: ${line}');
     }
 
-    return { title, date };
+    return { episodeNumber, title, date };
   });
 }
 
-console.log(await transformDates());
+const stuff = await transformDates();
+console.log(stuff[5]);
+console.log(stuff[6]);
