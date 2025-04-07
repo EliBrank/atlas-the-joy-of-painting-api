@@ -1,4 +1,4 @@
-export default function capitalizePretty(text: string): string {
+export default function normalizeTitle(text: string): string {
   const exceptions = new Set([
     'a', 'and', 'as', 'at', 'but', 'by', 'down', 'for', 'from', 'if', 'in', 'into', 'is', 'like', 'near', 'nor', 'of', 'off' , 'on', 'once', 'onto', 'or', 'over', 'past', 'so', 'than', 'that', 'to', 'upon', 'when', 'with', 'yet'
   ]);

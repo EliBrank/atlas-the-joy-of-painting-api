@@ -2,7 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-export default async function extractDates(): Promise<string> {
+export default async function extractSubjects(): Promise<string> {
   // path.resolve code doesn't work with ES6 module setup
   // these variables allow __dirname to still resolve correctly
   const __filename = fileURLToPath(import.meta.url);
@@ -10,7 +10,7 @@ export default async function extractDates(): Promise<string> {
 
   const filePath = path.resolve(
     __dirname,
-    '../sources/The Joy Of Painting - Episode Dates'
+    '../sources/The Joy Of Painting - Subject Matter'
   );
 
   return fs.readFile(filePath, 'utf-8');
