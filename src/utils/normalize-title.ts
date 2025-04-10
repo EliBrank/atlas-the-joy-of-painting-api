@@ -1,12 +1,11 @@
-import { compareTwoStrings } from 'string-similarity';
-
 export function normalizeTitle(text: string): string {
-  // remove leading/trailing quotes/whitespace
-  let textClean = text.replace(/^["'\s]+|["'\s]+$/g, '');
-  // replace '&' with 'and'
-  textClean = textClean.replace(/&/g, 'and');
-  // replace '-' with spaces
-  textClean = textClean.replace(/-/g, ' ');
+  let textClean = text
+    // remove leading/trailing quotes/whitespace
+    .replace(/^["'\s]+|["'\s]+$/g, '')
+    // replace '&' with 'and'
+    .replace(/&/g, 'and')
+    // replace '-' with spaces
+    .replace(/-/g, ' ');
 
   return textClean.toLowerCase().trim();
 }
