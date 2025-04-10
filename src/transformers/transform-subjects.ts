@@ -36,7 +36,3 @@ export async function transformSubjects(): Promise<EpisodeSubjectData[]> {
     };
   });
 }
-
-const stuff = await transformSubjects();
-console.log(stuff[5]);
-console.log(stuff[6]);

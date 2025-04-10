@@ -38,7 +38,3 @@ export async function transformDates(): Promise<EpisodeDateData[]> {
     return { episodeNumber, title, date };
   });
 }
-
-const stuff = await transformDates();
-console.log(stuff[5]);
-console.log(stuff[6]);

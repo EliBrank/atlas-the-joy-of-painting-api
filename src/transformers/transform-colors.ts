@@ -32,7 +32,3 @@ export async function transformColors(): Promise<EpisodeColorData[]> {
     };
   });
 }
-
-const stuff = await transformColors();
-console.log(stuff[5]);
-console.log(stuff[6]);
