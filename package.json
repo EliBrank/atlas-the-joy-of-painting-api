@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc && tsc-alias && copy:sources",
-    "copy:sources": "copyfiles -u 1 src/sources/**/* dist/sources"
+    "copy:sources": "copyfiles -u 2 src/sources/**/* dist/sources",
+    "build": "tsc && tsc-alias && npm run copy:sources"
   },
   "keywords": [],
   "author": "",
