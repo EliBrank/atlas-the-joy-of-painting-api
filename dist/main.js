@@ -14,4 +14,5 @@ async function main() {
         await prisma.$disconnect();
     }
 }
+main();
 //# sourceMappingURL=main.js.map

@@ -1,6 +1,6 @@
 import { compareTwoStrings } from 'string-similarity';
 import { normalizeTitle } from './normalize-title.js';
-const SIMILARITY_THRESHOLD = 0.75;
+const SIMILARITY_THRESHOLD = 0.5;
 export default function validateEpisode(titles) {
     let isValid = true;
     const numTitles = titles.length;

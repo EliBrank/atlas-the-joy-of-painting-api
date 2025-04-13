@@ -7,7 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "copy:sources": "copyfiles -u 2 src/sources/**/* dist/sources",
-    "build": "tsc && tsc-alias && npm run copy:sources"
+    "build": "tsc && tsc-alias && npm run copy:sources",
+    "start": "node dist/main.js"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +26,10 @@
   },
   "dependencies": {
     "@prisma/client": "^6.5.0",
-    "csv-parse": "^5.6.0"
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "cors": "^2.8.5",
+    "csv-parse": "^5.6.0",
+    "express": "^5.1.0"
   }
 }

@@ -32,7 +32,11 @@ export async function loadEpisodes() {
   for (let i = 0; i < episodeCount; i++) {
     // also check that episode titles between data sources match
     if (!validateEpisode([dates[i].title, colors[i].title, subjects[i].title])) {
-      throw new Error('Mismatched episode titles');
+      throw new Error('Mismatched episode titles: ' + '\n' +
+        dates[i].title + '\n' +
+        colors[i].title + '\n' +
+        subjects[i].title
+      );
     }
     const episodeData = {
       title: prettifyTitle(dates[i].title),
@@ -61,12 +65,18 @@ export async function loadEpisodes() {
         });
 
         // populate episode_color table
-        // create used instead of upsert because transaction will rollback on failure
-        await transaction.episodeColor.create({
-          data: {
+        await transaction.episodeColor.upsert({
+          where: {
+            episodeId_colorId: {
+              episodeId: episode.id,
+              colorId: color.id
+            }
+          },
+          create: {
             episodeId: episode.id,
             colorId: color.id,
-          }
+          },
+          update: {}
         });
       }
 
@@ -80,11 +90,18 @@ export async function loadEpisodes() {
 
         // populate episode_subject table
         // create used instead of upsert because transaction will rollback on failure
-        await transaction.episodeSubject.create({
-          data: {
+        await transaction.episodeSubject.upsert({
+          where: {
+            episodeId_subjectId: {
+              episodeId: episode.id,
+              subjectId: subject.id
+            }
+          },
+          create: {
             episodeId: episode.id,
             subjectId: subject.id,
-          }
+          },
+          update: {}
         });
       }
     });

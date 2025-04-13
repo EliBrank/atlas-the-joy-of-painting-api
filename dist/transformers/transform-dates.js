@@ -26,7 +26,4 @@ export async function transformDates() {
         return { episodeNumber, title, date };
     });
 }
-const stuff = await transformDates();
-console.log(stuff[5]);
-console.log(stuff[6]);
 //# sourceMappingURL=transform-dates.js.map

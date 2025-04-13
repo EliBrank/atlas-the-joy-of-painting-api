@@ -22,7 +22,4 @@ export async function transformColors() {
         };
     });
 }
-const stuff = await transformColors();
-console.log(stuff[5]);
-console.log(stuff[6]);
 //# sourceMappingURL=transform-colors.js.map
