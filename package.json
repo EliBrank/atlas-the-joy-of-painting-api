@@ -8,7 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "copy:sources": "copyfiles -u 2 src/sources/**/* dist/sources",
     "build": "tsc && tsc-alias && npm run copy:sources",
-    "start": "node dist/main.js"
+    "start": "node dist/main.js",
+    "api": "node dist/api.js"
   },
   "keywords": [],
   "author": "",
