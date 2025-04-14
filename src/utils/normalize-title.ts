@@ -1,7 +1,7 @@
 export function normalizeTitle(text: string): string {
   let textClean = text
     // remove leading/trailing quotes/whitespace
-    .replace(/^["'\s]+|["'\s]+$/g, '')
+    .replace(/^["\s]+|["\s]+$/g, '')
     // replace '&' with 'and'
     .replace(/&/g, 'and')
     // replace '-' with spaces
@@ -12,7 +12,7 @@ export function normalizeTitle(text: string): string {
 
 export function prettifyTitle(text: string): string {
   const exceptions = new Set([
-    'a', 'and', 'as', 'at', 'but', 'by', 'down', 'for', 'from', 'if', 'in', 'into', 'is', 'like', 'near', 'nor', 'of', 'off' , 'on', 'once', 'onto', 'or', 'over', 'past', 'so', 'than', 'that', 'to', 'upon', 'when', 'with', 'yet'
+    'a', 'an', 'and', 'as', 'at', 'but', 'by', 'down', 'for', 'from', 'if', 'in', 'into', 'is', 'like', 'nor', 'of', 'off' , 'on', 'once', 'onto', 'or', 'past', 'so', 'the', 'than', 'that', 'to', 'upon', 'when', 'with', 'yet'
   ]);
   const textClean = text
     .split(' ')

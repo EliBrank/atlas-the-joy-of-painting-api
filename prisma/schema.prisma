@@ -9,7 +9,8 @@ datasource db {
 
 model Episode {
   id Int @id @default(autoincrement())
-  title String @unique
+  episodeNumber Int @unique
+  title String
   airDate DateTime
   subjects EpisodeSubject[]
   colors EpisodeColor[]

@@ -9,16 +9,17 @@ export interface EpisodeDateData {
 
 export async function transformDates(): Promise<EpisodeDateData[]> {
   const content = await extractDates();
-  const lines = content.split('\n');
+  const lines = content.split('\n')
+    .filter(line => line.trim() !== ''); // remove blank lines
 
   return lines.map((line, index) => {
     const episodeNumber = index + 1;
-    // captures "title" (date) in two separate groups
+    // captures "title" and (date) in two separate groups
     const pattern = /"([^"]+)"\s*\((\w+\s\d{1,2},\s\d{4})\)/;
     const match = line.match(pattern);
 
     if (!match) {
-      throw new Error('Invalid data pattern: ${line}');
+      throw new Error(`Invalid data pattern: ${line}`);
     }
     // match[0] contains the full matched string
     // match[1], match[2]... contain capture groups
@@ -27,12 +28,12 @@ export async function transformDates(): Promise<EpisodeDateData[]> {
 
     const title = normalizeTitle(rawTitle);
     if (!title) {
-      throw new Error('Invalid title: ${line}');
+      throw new Error(`Invalid title: ${line}`);
     }
 
     const date = new Date(rawDate);
     if (isNaN(date.getTime())) {
-      throw new Error('Invalid date: ${line}');
+      throw new Error(`Invalid date: ${line}`);
     }
 
     return { episodeNumber, title, date };

@@ -7,7 +7,8 @@ import validateEpisode from "utils/validate-episode.js";
 
 const prisma = new PrismaClient
 
-interface consolidatedEpisodes {
+interface ConsolidatedEpisodes {
+  episodeNumber: number;
   title: string;
   airDate: Date;
   colors: string[];
@@ -26,84 +27,82 @@ export async function loadEpisodes() {
   // dates data serves as primary source of truth to check other data
   const episodeCount = dates.length;
   if (episodeCount !== colors.length || episodeCount !== subjects.length) {
-    throw new Error('Mismatch in episode count');
+    throw new Error(`Mismatch in episode count:
+      Dates: ${dates.length},
+      Colors: ${colors.length},
+      Subjects: ${subjects.length}`
+    );
   }
 
-  for (let i = 0; i < episodeCount; i++) {
+  const allEpisodes: ConsolidatedEpisodes[] = dates.map((date, index) => {
     // also check that episode titles between data sources match
-    if (!validateEpisode([dates[i].title, colors[i].title, subjects[i].title])) {
-      throw new Error('Mismatched episode titles: ' + '\n' +
-        dates[i].title + '\n' +
-        colors[i].title + '\n' +
-        subjects[i].title
+    if (!validateEpisode([date.title, colors[index].title, subjects[index].title])) {
+      throw new Error(`Mismatched episode titles:
+        Title in Dates: ${date.title},
+        Title in Colors: ${colors[index].title},
+        Title in Subjects: ${subjects[index].title}`
       );
     }
-    const episodeData = {
-      title: prettifyTitle(dates[i].title),
-      airDate: dates[i].date,
-      colors: colors[i].colors,
-      subjects: subjects[i].subjects,
+
+    return {
+      episodeNumber: date.episodeNumber,
+      title: prettifyTitle(date.title),
+      airDate: date.date,
+      colors: colors[index].colors,
+      subjects: subjects[index].subjects,
     };
+  });
 
-    // create/update episode table
-    const episode = await prisma.episode.upsert({
-      where: { title: episodeData.title },
-      update: { airDate: episodeData.airDate },
-      create: {
-        title: episodeData.title,
-        airDate: episodeData.airDate,
-      },
-    });
+  await prisma.$transaction(async (subTx) => {
+    // clear out existing data in database
+    await subTx.episodeColor.deleteMany();
+    await subTx.episodeSubject.deleteMany();
+    await subTx.episode.deleteMany();
+    // reset auto-incremented ids
+    await subTx.$executeRaw`DELETE FROM sqlite_sequence WHERE name IN ('Episode','Color','Subject')`;
 
-    await prisma.$transaction(async (transaction) => {
-      for (const colorName of episodeData.colors) {
-        // create/update color table
-        const color = await transaction.color.upsert({
+    for (const episodeData of allEpisodes) {
+      // create/update episode table
+      const episode = await subTx.episode.upsert({
+        where: { episodeNumber: episodeData.episodeNumber },
+        create: {
+          episodeNumber: episodeData.episodeNumber,
+          title: episodeData.title,
+          airDate: episodeData.airDate,
+        },
+        update: {
+          title: episodeData.title,
+          airDate: episodeData.airDate,
+        },
+      });
+
+      await Promise.all(episodeData.colors.map(async (colorName) => {
+        const color = await subTx.color.upsert({
           where: { name: colorName },
           create: { name: colorName },
-          update: {}
+          update: {},
         });
-
-        // populate episode_color table
-        await transaction.episodeColor.upsert({
-          where: {
-            episodeId_colorId: {
-              episodeId: episode.id,
-              colorId: color.id
-            }
-          },
-          create: {
+        await subTx.episodeColor.create({
+          data: {
             episodeId: episode.id,
             colorId: color.id,
-          },
-          update: {}
+          }
         });
-      }
+      }));
 
-      for (const subjectName of episodeData.subjects) {
-        // create/update subject table
-        const subject = await transaction.subject.upsert({
+      await Promise.all(episodeData.subjects.map(async (subjectName) => {
+        const subject = await subTx.subject.upsert({
           where: { name: subjectName },
           create: { name: subjectName },
-          update: {}
+          update: {},
         });
-
-        // populate episode_subject table
-        // create used instead of upsert because transaction will rollback on failure
-        await transaction.episodeSubject.upsert({
-          where: {
-            episodeId_subjectId: {
-              episodeId: episode.id,
-              subjectId: subject.id
-            }
-          },
-          create: {
+        await subTx.episodeSubject.create({
+          data: {
             episodeId: episode.id,
             subjectId: subject.id,
-          },
-          update: {}
+          }
         });
-      }
-    });
-  }
+      }));
+    }
+  });
 }
